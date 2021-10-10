@@ -19,7 +19,7 @@ import type {AnimationTimeoutId} from '../utils/requestAnimationTimeout';
 
 import * as React from 'react';
 import clsx from 'clsx';
-import {animated} from 'react-spring';
+import {animated, SpringValue} from 'react-spring';
 import calculateSizeAndPositionDataAndUpdateScrollOffset from './utils/calculateSizeAndPositionDataAndUpdateScrollOffset';
 import ScalingCellSizeAndPositionManager from './utils/ScalingCellSizeAndPositionManager';
 import createCallbackMemoizer from '../utils/createCallbackMemoizer';
@@ -61,6 +61,8 @@ type ScrollPosition = {
 type Props = {
   'aria-label': string,
   'aria-readonly'?: boolean,
+
+  springScrollLeft: SpringValue<number>,
 
   /**
    * Set the width of the inner scrollable container to 'auto'.
@@ -281,6 +283,7 @@ class Grid extends React.PureComponent<Props, State> {
     scrollToAlignment: 'auto',
     scrollToColumn: -1,
     scrollToRow: -1,
+    springScrollLeft: undefined,
     style: {},
     tabIndex: 0,
     isScrollingOptOut: false,
@@ -710,13 +713,13 @@ class Grid extends React.PureComponent<Props, State> {
     // So we only set these when we require an adjustment of the scroll position.
     // See issue #2 for more information.
     if (
+      !this.props.springScrollLeft &&
       scrollPositionChangeReason === SCROLL_POSITION_CHANGE_REASONS.REQUESTED
     ) {
       // @TRICKY :autoHeight and :autoWidth properties instructs Grid to leave :scrollTop and :scrollLeft management to an external HOC (eg WindowScroller).
       // In this case we should avoid checking scrollingContainer.scrollTop and scrollingContainer.scrollLeft since it forces layout/flow.
       if (
         !autoWidth &&
-        !this.props.springScroll &&
         scrollLeft >= 0 &&
         (scrollLeft !== this._scrollingContainer.scrollLeft ||
           columnOrRowCountJustIncreasedFromZero)
@@ -725,7 +728,6 @@ class Grid extends React.PureComponent<Props, State> {
       }
       if (
         !autoHeight &&
-        !this.props.springScroll &&
         scrollTop >= 0 &&
         (scrollTop !== this._scrollingContainer.scrollTop ||
           columnOrRowCountJustIncreasedFromZero)
@@ -1045,7 +1047,7 @@ class Grid extends React.PureComponent<Props, State> {
     return (
       <animated.div
         ref={this._setScrollingContainerRef}
-        scrollLeft={this.props.springScroll}
+        scrollLeft={this.props.springScrollLeft}
         {...containerProps}
         aria-label={this.props['aria-label']}
         aria-readonly={this.props['aria-readonly']}
