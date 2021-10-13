@@ -15,7 +15,7 @@ export default {
       'react-dom': 'ReactDOM',
     },
   },
-  external: ['react', 'react-dom', 'react-spring'],
+  external: ['react', 'react-dom'],
   plugins: [
     nodeResolve(),
     commonjs({
