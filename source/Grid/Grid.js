@@ -19,7 +19,6 @@ import type {AnimationTimeoutId} from '../utils/requestAnimationTimeout';
 
 import * as React from 'react';
 import clsx from 'clsx';
-import {animated} from 'react-spring';
 import calculateSizeAndPositionDataAndUpdateScrollOffset from './utils/calculateSizeAndPositionDataAndUpdateScrollOffset';
 import ScalingCellSizeAndPositionManager from './utils/ScalingCellSizeAndPositionManager';
 import createCallbackMemoizer from '../utils/createCallbackMemoizer';
@@ -716,7 +715,6 @@ class Grid extends React.PureComponent<Props, State> {
       // In this case we should avoid checking scrollingContainer.scrollTop and scrollingContainer.scrollLeft since it forces layout/flow.
       if (
         !autoWidth &&
-        !this.props.springScroll &&
         scrollLeft >= 0 &&
         (scrollLeft !== this._scrollingContainer.scrollLeft ||
           columnOrRowCountJustIncreasedFromZero)
@@ -725,7 +723,6 @@ class Grid extends React.PureComponent<Props, State> {
       }
       if (
         !autoHeight &&
-        !this.props.springScroll &&
         scrollTop >= 0 &&
         (scrollTop !== this._scrollingContainer.scrollTop ||
           columnOrRowCountJustIncreasedFromZero)
@@ -1043,9 +1040,8 @@ class Grid extends React.PureComponent<Props, State> {
       childrenToDisplay.length === 0 && height > 0 && width > 0;
 
     return (
-      <animated.div
+      <div
         ref={this._setScrollingContainerRef}
-        scrollLeft={this.props.springScroll}
         {...containerProps}
         aria-label={this.props['aria-label']}
         aria-readonly={this.props['aria-readonly']}
@@ -1076,7 +1072,7 @@ class Grid extends React.PureComponent<Props, State> {
           </div>
         )}
         {showNoContentRenderer && noContentRenderer()}
-      </animated.div>
+      </div>
     );
   }
 
